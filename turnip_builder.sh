@@ -4,7 +4,7 @@ red='\033[0;31m'
 nocolor='\033[0m'
 deps="meson ninja patchelf unzip curl pip flex bison zip"
 workdir="$(pwd)/turnip_workdir"
-magiskdir="$workdir/turnip_module"
+driverdir="$workdir/turnip_module"
 ndkver="android-ndk-r25c"
 clear
 
@@ -87,6 +87,8 @@ ninja -C build-android-aarch64 &> "$workdir"/ninja_log
 
 echo "Using patchelf to match soname ..."  $'\n'
 cp $workdir/mesa-main/build-android-aarch64/src/freedreno/vulkan/libvulkan_freedreno.so $workdir
+cp $workdir/mesa-main/build-android-aarch64/src/android_stub/libhardware.so $workdir
+cp $workdir/mesa-main/build-android-aarch64/src/android_stub/libsync.so $workdir
 cp $workdir/mesa-main/build-android-aarch64/src/android_stub/libbacktrace.so $workdir
 cd $workdir
 patchelf --set-soname vulkan.adreno.so libvulkan_freedreno.so
@@ -111,7 +113,7 @@ cat <<EOF >"meta.json"
   "name": "Mesa Turnip Adreno Driver 23.3.0",
   "description": "Open-source Vulkan driver build from mesa drivers repo",
   "author": "Cairetina",
-  "packageVersion": "devel",
+  "packageVersion": "dev",
   "vendor": "Mesa",
   "driverVersion": "23.3.0-devel",
   "minApi": 30,
@@ -122,6 +124,8 @@ EOF
 
 echo "Copy necessary files from work directory ..." $'\n'
 cp $workdir/vulkan.adreno.so $driverdir
+cp $workdir/libhardware.so $driverdir
+cp $workdir/libsync.so $driverdir
 cp $workdir/libbacktrace.so $driverdir
 
 
